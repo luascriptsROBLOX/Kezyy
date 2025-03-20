@@ -2,19 +2,32 @@ function loginWithGoogle() {
     window.location.href = '/auth/google';
 }
 
-function generateKey() {
+async function generateKey() {
     const username = document.getElementById('usernameInput').value;
     const duration = document.getElementById('durationInput').value;
 
-    fetch('/keys/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, duration })
-    })
-    .then(response => response.json())
-    .then(data => {
+    if (!username || !duration) {
+        alert('Username and duration are required!');
+        return;
+    }
+
+    try {
+        const response = await fetch('/keys/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, duration })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to generate key');
+        }
+
+        const data = await response.json();
         document.getElementById('keyOutput').innerText = `Key: ${data.key}, Auth ID: ${data.authId}`;
-    });
+    } catch (err) {
+        console.error(err);
+        alert('Failed to generate key. Please try again.');
+    }
 }
 
 // Monitoring chart
