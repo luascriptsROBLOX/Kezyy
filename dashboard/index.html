@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Keyyz Auth System Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</head>
+<body>
+    <h1>Keyyz Auth System Dashboard</h1>
+    <div id="auth">
+        <button onclick="loginWithGoogle()">Sign in with Google</button>
+    </div>
+    <div id="dashboard" style="display: none;">
+        <h2>Welcome, <span id="username"></span></h2>
+        <div id="generateKey">
+            <h3>Generate Key</h3>
+            <input type="text" id="usernameInput" placeholder="Username" required>
+            <input type="number" id="durationInput" placeholder="Duration (minutes)" required>
+            <button onclick="generateKey()">Generate Key</button>
+            <p id="keyOutput"></p>
+        </div>
+        <div id="monitoring">
+            <h3>Monitoring</h3>
+            <canvas id="usageChart"></canvas>
+        </div>
+    </div>
+</body>
+</html>
