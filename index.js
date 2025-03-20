@@ -12,7 +12,10 @@ const port = process.env.PORT || 3000;
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.error('MongoDB connection error:', err));
+    .catch(err => {
+        console.error('MongoDB connection error:', err);
+        process.exit(1); // Exit the application if MongoDB connection fails
+    });
 
 // Middleware
 app.use(cors());
@@ -25,7 +28,6 @@ passport.use(new GoogleStrategy({
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: '/auth/google/callback'
 }, (accessToken, refreshToken, profile, done) => {
-    // Save or retrieve user from the database
     User.findOne({ googleId: profile.id }, (err, user) => {
         if (err) return done(err);
         if (!user) {
@@ -48,6 +50,12 @@ app.use('/users', require('./routes/users'));
 
 // Serve the dashboard
 app.use(express.static('dashboard'));
+
+// Global error handler
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ error: 'Something went wrong!' });
+});
 
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
